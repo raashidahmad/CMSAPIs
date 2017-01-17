@@ -87,13 +87,17 @@ namespace CMS.Services
 
         public District GetById(int id)
             {
-            var District = unitWork.DistrictRepository.GetByID(id);
-            if (District != null)
+            using (var unitWork = new UnitOfWork())
                 {
-                var mappedDistrict = Mapper.Map<EFDistrict, District>(District);
-                return mappedDistrict;
+                var district = unitWork.DistrictRepository.GetByID(id);
+                var mapper = config.CreateMapper();
+                if (district != null)
+                    {
+                    var mappedDistrict = mapper.Map<EFDistrict, District>(district);
+                    return mappedDistrict;
+                    }
+                return null;
                 }
-            return null;
             }
 
         public ActionResponse Add(District newDistrict)
