@@ -88,10 +88,11 @@ namespace CMS.Services
 
         public Complaint GetById(int id)
             {
-            var Complaint = unitWork.ComplaintRepository.GetByID(id);
-            if (Complaint != null)
+            var complaint = unitWork.ComplaintRepository.GetByID(id);
+            var mapper = config.CreateMapper();
+            if (complaint != null)
                 {
-                var mappedComplaint = Mapper.Map<EFComplaint, Complaint>(Complaint);
+                var mappedComplaint = mapper.Map<EFComplaint, Complaint>(complaint);
                 return mappedComplaint;
                 }
             return null;

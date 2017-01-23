@@ -39,6 +39,7 @@ namespace CMS.DataModel.ModelWrapper
         public int Id { get; set; }
         public string Title { get; set; }
         public string District { get; set; }
+        public int DistrictId { get; set; }
         }
 
     public class Complainant

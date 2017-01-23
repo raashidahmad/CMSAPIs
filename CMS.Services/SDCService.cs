@@ -18,7 +18,7 @@ namespace CMS.Services
         /// Gets list of all sdcs
         /// </summary>
         /// <returns></returns>
-        IEnumerable<SDC> GetAll();
+        IEnumerable<SDCView> GetAll();
 
         /// <summary>
         /// Gets a SDC by ID
@@ -68,16 +68,24 @@ namespace CMS.Services
             });
             }
 
-        public IEnumerable<SDC> GetAll()
+        public IEnumerable<SDCView> GetAll()
             {
             using (var unitWork = new UnitOfWork())
                 {
-                var mapper = config.CreateMapper();
-                List<SDC> sdcsList = new List<SDC>();
-                var sdcs = unitWork.SDCRepository.GetAll().ToList();
+                List<SDCView> sdcsList = new List<SDCView>();
+                var sdcs = unitWork.SDCRepository.GetWithInclude(s => s.Id != 0, new string[] { "District" });
                 if (sdcs.Any())
                     {
-                    sdcsList = mapper.Map<List<EFSDC>, List<SDC>>(sdcs);
+                    foreach(var sdc in sdcs)
+                        {
+                        sdcsList.Add(new SDCView()
+                            {
+                                Id = sdc.Id,
+                                Title = sdc.Title,
+                                District = sdc.District.Name,
+                                DistrictId = sdc.District.Id
+                            });
+                        }
                     return sdcsList;
                     }
                 return null;
@@ -87,9 +95,10 @@ namespace CMS.Services
         public SDC GetById(int id)
             {
             var SDC = unitWork.SDCRepository.GetByID(id);
+            var mapper = config.CreateMapper();
             if (SDC != null)
                 {
-                var mappedSDC = Mapper.Map<EFSDC, SDC>(SDC);
+                var mappedSDC = mapper.Map<EFSDC, SDC>(SDC);
                 return mappedSDC;
                 }
             return null;
@@ -99,11 +108,20 @@ namespace CMS.Services
             {
             try
                 {
+                var district = unitWork.DistrictRepository.GetByID(newSDC.DistrictId);
+                if (district == null)
+                    {
+                    response.Success = false;
+                    response.Message = msgHelper.GetNotFoundMessage("District");
+                    return response;
+                    }
+
                 using (var scope = new TransactionScope())
                     {
                     var SDC = new EFSDC()
                     {
-                        Title = newSDC.Title
+                        Title = newSDC.Title,
+                        District = district
                     };
                     unitWork.SDCRepository.Insert(SDC);
                     unitWork.Save();
@@ -126,12 +144,21 @@ namespace CMS.Services
                 {
                 if (updatedSDC != null)
                     {
+                    var district = unitWork.DistrictRepository.GetByID(updatedSDC.DistrictId);
+                    if (district == null)
+                        {
+                        response.Success = false;
+                        response.Message = msgHelper.GetNotFoundMessage("District");
+                        return response;
+                        }
+
                     using (var scope = new TransactionScope())
                         {
                         var SDC = unitWork.SDCRepository.GetByID(id);
                         if (SDC != null)
                             {
                             SDC.Title = updatedSDC.Title;
+                            SDC.District = district;
                             unitWork.SDCRepository.Update(SDC);
                             unitWork.Save();
                             scope.Complete();

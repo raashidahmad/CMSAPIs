@@ -87,13 +87,17 @@ namespace CMS.Services
 
         public Category GetById(int id)
             {
-            var Category = unitWork.CategoryRepository.GetByID(id);
-            if (Category != null)
+            using (var unitWork = new UnitOfWork())
                 {
-                var mappedCategory = Mapper.Map<EFCategory, Category>(Category);
-                return mappedCategory;
+                var mapper = config.CreateMapper();
+                var category = unitWork.CategoryRepository.GetByID(id);
+                if (category != null)
+                    {
+                    var mappedCategory = mapper.Map<EFCategory, Category>(category);
+                    return mappedCategory;
+                    }
+                return null;
                 }
-            return null;
             }
 
         public ActionResponse Add(Category newCategory)

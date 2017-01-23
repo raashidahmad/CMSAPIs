@@ -62,7 +62,7 @@ namespace CMS.Api.Controllers
             return Content(HttpStatusCode.BadRequest, response.Message);
             }
 
-        public IHttpActionResult PostDocument()
+        /*public IHttpActionResult PostDocument()
             {
             var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count > 0)
@@ -80,7 +80,7 @@ namespace CMS.Api.Controllers
                 }
 
             return Content(HttpStatusCode.BadRequest, "");
-            }
+            }*/
 
         // PUT api/Category/5
         public IHttpActionResult Put(int id, [FromBody]Category category)

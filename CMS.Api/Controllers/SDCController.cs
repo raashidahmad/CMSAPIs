@@ -23,10 +23,10 @@ namespace CMS.Api.Controllers
         public IHttpActionResult Get()
             {
             sdcService = new SDCService();
-            var categories = sdcService.GetAll();
-            if (categories != null)
+            var sdcs = sdcService.GetAll();
+            if (sdcs != null)
                 {
-                var sdcEntities = categories as List<SDC> ?? categories.ToList();
+                var sdcEntities = sdcs as List<SDCView> ?? sdcs.ToList();
                 if (sdcEntities.Any())
                     return Ok(sdcEntities);
                 }
