@@ -27,7 +27,7 @@ namespace CMS.Api.Controllers
             var complaints = complaintService.GetAll();
             if (complaints != null)
                 {
-                var complaintEntities = complaints as List<Complaint> ?? complaints.ToList();
+                var complaintEntities = complaints as List<ComplaintView> ?? complaints.ToList();
                 if (complaintEntities.Any())
                     return Ok(complaintEntities);
                 }
@@ -46,7 +46,7 @@ namespace CMS.Api.Controllers
             }
 
         // POST api/Complaint
-        public IHttpActionResult Post([FromBody] Complaint complaint)
+        public IHttpActionResult Post([FromBody] NewComplaint complaint)
             {
             List<string> documents = new List<string>();
             complaintService = new ComplaintService();
@@ -85,7 +85,7 @@ namespace CMS.Api.Controllers
 
         // PUT api/Complaint/5
         //Need to modify it as what is actually allowed to update
-        public IHttpActionResult Put(int id, [FromBody]Complaint complaint)
+        public IHttpActionResult Put(int id, [FromBody]NewComplaint complaint)
             {
             complaintService = new ComplaintService();
             if (!ModelState.IsValid)

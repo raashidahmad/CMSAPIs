@@ -17,6 +17,8 @@ using Microsoft.Owin.Security.OAuth;
 using CMS.Api.Providers;
 using CMS.Api.Results;
 using CMS.DataModel;
+using CMS.DataModel.ModelWrapper;
+using CMS.Services;
 
 namespace CMS.Api.Controllers
 {
@@ -30,7 +32,40 @@ namespace CMS.Api.Controllers
             {
             //Only SuperAdmin or Admin can delete users (Later when implement roles)
             var identity = User.Identity as System.Security.Claims.ClaimsIdentity;
-            return Ok(this.AppUserManager.Users.ToList().Select(u => this.TheModelFactory.Create(u)));
+            var users = (this.AppUserManager.Users.ToList().Select(u => this.TheModelFactory.Create(u)));
+            List<UserView> usersList = new List<UserView>();
+            
+            foreach(var user in users)
+                {
+                usersList.Add(new UserView()
+                    {
+                        Username = user.UserName,
+                        DistrictId = user.DistrictId,
+                        SDCId = user.SDCId,
+                        FullName = user.FullName,
+                        Roles = user.Roles.ToList()
+                    });
+                }
+            return Ok(usersList);
+            }
+
+        [Route("roles")]
+        public IHttpActionResult GetRoles()
+            {
+            ApplicationDbContext dbContext = new ApplicationDbContext();
+            List<Role> rolesList = new List<Role>();
+            //var roles = this.AppRoleManager.Roles.ToList().Select(r => this.TheModelFactory.Create(r));
+            var roles = dbContext.Roles.OrderBy(x => x.Name);
+
+            foreach(var role in roles)
+                {
+                rolesList.Add(new Role()
+                    {
+                        Id = role.Id,
+                        Name = role.Name
+                    });
+                }
+            return Ok(rolesList);
             }
 
         [Route("usersInRole/{role}")]
@@ -92,6 +127,8 @@ namespace CMS.Api.Controllers
                 Email = createUserModel.Email,
                 FirstName = createUserModel.FirstName,
                 LastName = createUserModel.LastName,
+                DistrictId = createUserModel.DistrictId,
+                SDCId = createUserModel.SDCId,
                 CreationDate = DateTime.Now.Date,
             };
 

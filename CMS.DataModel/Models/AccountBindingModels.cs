@@ -38,6 +38,12 @@ namespace CMS.DataModel
         public string Password { get; set; }
 
         [Required]
+        public int DistrictId { get; set; }
+
+        [Required]
+        public int SDCId { get; set; }
+
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]

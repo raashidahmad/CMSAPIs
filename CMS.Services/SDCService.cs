@@ -21,6 +21,20 @@ namespace CMS.Services
         IEnumerable<SDCView> GetAll();
 
         /// <summary>
+        /// Get sdc's for the provided Ids
+        /// </summary>
+        /// <param name="Ids"></param>
+        /// <returns></returns>
+        IEnumerable<SDC> GetSDCs(List<int> Ids);
+
+        /// <summary>
+        /// Gets list of district SDCs
+        /// </summary>
+        /// <param name="districtId"></param>
+        /// <returns></returns>
+        IEnumerable<SDC> GetDistrictSDCs(int districtId);
+
+        /// <summary>
         /// Gets a SDC by ID
         /// </summary>
         /// <param name="id"></param>
@@ -89,6 +103,45 @@ namespace CMS.Services
                     return sdcsList;
                     }
                 return null;
+                }
+            }
+
+        public IEnumerable<SDC> GetSDCs(List<int> Ids)
+            {
+            using (var unitWork = new UnitOfWork())
+                {
+                List<SDC> sdcList = new List<SDC>();
+                var sdcs = unitWork.SDCRepository.GetWithInclude(s => Ids.Contains(s.Id), new string[] {"District"});
+                foreach(var sdc in sdcs)
+                    {
+                    sdcList.Add(new SDC()
+                        {
+                            Id = sdc.Id,
+                            Title = sdc.Title,
+                            DistrictId = sdc.District.Id
+                        });
+                    }
+                return sdcList;
+                }
+            }
+
+        public IEnumerable<SDC> GetDistrictSDCs(int districtId)
+            {
+            using (var unitWork = new UnitOfWork())
+                {
+                List<SDC> sdcList = new List<SDC>();
+                var sdcs = unitWork.SDCRepository.GetWithInclude(s => s.District.Id == districtId, new string[] { "District" });
+
+                foreach (var sdc in sdcs)
+                    {
+                    sdcList.Add(new SDC()
+                    {
+                        Id = sdc.Id,
+                        Title = sdc.Title,
+                        DistrictId = sdc.District.Id
+                    });
+                    }
+                return sdcList;
                 }
             }
 

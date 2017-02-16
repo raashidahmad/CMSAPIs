@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace CMS.Api.Controllers
 {
@@ -27,6 +26,40 @@ namespace CMS.Api.Controllers
             if (sdcs != null)
                 {
                 var sdcEntities = sdcs as List<SDCView> ?? sdcs.ToList();
+                if (sdcEntities.Any())
+                    return Ok(sdcEntities);
+                }
+            return Content(HttpStatusCode.NotFound, APIMessageHelper.ListNotFoundMessage("SDCs"));
+            }
+
+        [Route("api/SDC/TakeMany")]
+        public IHttpActionResult TakeMany([FromBody] List<int> Ids)
+            {
+            if (Ids.Count == 0)
+                return Content(HttpStatusCode.BadRequest, "Provide valid Ids");
+
+            sdcService = new SDCService();
+            var sdcs = sdcService.GetSDCs(Ids);
+            if (sdcs != null)
+                {
+                var sdcEntities = sdcs as List<SDC> ?? sdcs.ToList();
+                if (sdcEntities.Any())
+                    return Ok(sdcEntities);
+                }
+            return Content(HttpStatusCode.NotFound, APIMessageHelper.ListNotFoundMessage("SDCs"));
+            }
+
+        [Route("api/SDC/GetDistrictSDCs/{id}")]
+        public IHttpActionResult GetDistrictSDCs(int id)
+            {
+            if (id == 0)
+                return Content(HttpStatusCode.BadRequest, "Provide a valid district Id");
+
+            sdcService = new SDCService();
+            var sdcs = sdcService.GetDistrictSDCs(id);
+            if (sdcs != null)
+                {
+                var sdcEntities = sdcs as List<SDC> ?? sdcs.ToList();
                 if (sdcEntities.Any())
                     return Ok(sdcEntities);
                 }

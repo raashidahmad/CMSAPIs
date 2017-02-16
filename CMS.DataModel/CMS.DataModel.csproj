@@ -90,6 +90,10 @@
     <Compile Include="Migrations\201612291002124_Initial_Migration.Designer.cs">
       <DependentUpon>201612291002124_Initial_Migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701251038420_added district to users table.cs" />
+    <Compile Include="Migrations\201701251038420_added district to users table.Designer.cs">
+      <DependentUpon>201701251038420_added district to users table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -109,6 +113,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201612291002124_Initial_Migration.resx">
       <DependentUpon>201612291002124_Initial_Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701251038420_added district to users table.resx">
+      <DependentUpon>201701251038420_added district to users table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

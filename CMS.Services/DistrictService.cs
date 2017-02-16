@@ -15,11 +15,17 @@ namespace CMS.Services
     public interface IDistrictService
         {
         /// <summary>
-        /// Gets list of all categories
+        /// Gets list of all districts
         /// </summary>
         /// <returns></returns>
         IEnumerable<District> GetAll();
 
+        /// <summary>
+        /// Gets list of districts for the provided Ids
+        /// </summary>
+        /// <param name="Ids"></param>
+        /// <returns></returns>
+        IEnumerable<District> GetDistricts(List<int> Ids);
         /// <summary>
         /// Gets a District by ID
         /// </summary>
@@ -74,14 +80,28 @@ namespace CMS.Services
                 {
                 var mapper = config.CreateMapper();
                 //Mapper.Initialize(cfg => cfg.CreateMap<EFDistrict, District>());
-                List<District> categoriesList = new List<District>();
-                var categories = unitWork.DistrictRepository.GetAll().ToList();
-                if (categories.Any())
+                List<District> districtsList = new List<District>();
+                var districts = unitWork.DistrictRepository.GetAll().ToList();
+                if (districts.Any())
                     {
-                    categoriesList = mapper.Map<List<EFDistrict>, List<District>>(categories);
-                    return categoriesList;
+                    districtsList = mapper.Map<List<EFDistrict>, List<District>>(districts);
+                    return districtsList;
                     }
                 return null;
+                }
+            }
+
+        public IEnumerable<District> GetDistricts(List<int> Ids)
+            {
+            using (var unitWork = new UnitOfWork())
+                {
+                List<District> districtList = new List<District>();
+                var districts = unitWork.DistrictRepository.GetMany(d => Ids.Contains(d.Id));
+                foreach(var district in districts)
+                    {
+                    districtList.Add(new District() { Id = district.Id, Name = district.Name });
+                    }
+                return districtList;
                 }
             }
 

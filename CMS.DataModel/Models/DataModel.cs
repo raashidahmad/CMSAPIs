@@ -71,6 +71,7 @@ namespace CMS.DataModel.Models
         [Required]
         public EFComplainant Complainant { get; set; }
         public EFCategory Category { get; set; }
+        public EFDistrict District { get; set; }
         public EFSDC SDC { get; set; }
         public string Description { get; set; }
         public DateTime Dated { get; set; }
@@ -106,5 +107,14 @@ namespace CMS.DataModel.Models
         public EFComplainant Complainant { get; set; }
         public DateTime Dated { get; set; }
         }
-    
+
+    public class UserView
+        {
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string RoleName { get; set; }
+        public int DistrictId { get; set; }
+        public int SDCId { get; set; }
+        }
     }

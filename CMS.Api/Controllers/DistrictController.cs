@@ -8,7 +8,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace CMS.Api.Controllers
 {
@@ -22,7 +21,7 @@ namespace CMS.Api.Controllers
             {
             //districtService = new DistrictService();
             }
-        
+
         public IHttpActionResult Get()
             {
             districtService = new DistrictService();
@@ -45,6 +44,26 @@ namespace CMS.Api.Controllers
                 return Ok(district);
             
             return Content(HttpStatusCode.NotFound, APIMessageHelper.EntityNotFoundMessage("District", id));
+            }
+
+        [Route("api/District/TakeMany")]
+        public IHttpActionResult TakeMany([FromBody] List<int> Ids)
+            {
+            if (Ids.Count == 0)
+                return Content(HttpStatusCode.BadRequest, "Provide valid Ids");
+
+            districtService = new DistrictService();
+            //List<int> filteredIds = (from obj in Ids
+                                     //select obj.Id).ToList();
+
+            var districts = districtService.GetDistricts(Ids);
+            if (districts != null)
+                {
+                var districtEntities = districts as List<District> ?? districts.ToList();
+                if (districtEntities.Any())
+                    return Ok(districtEntities);
+                }
+            return Content(HttpStatusCode.NotFound, APIMessageHelper.ListNotFoundMessage("Districts"));
             }
 
         // POST api/district
@@ -86,5 +105,6 @@ namespace CMS.Api.Controllers
             
             return Content(HttpStatusCode.BadRequest, response.Message);
             }
+
     }
 }

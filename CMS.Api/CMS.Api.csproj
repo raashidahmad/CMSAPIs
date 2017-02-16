@@ -199,6 +199,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\ComplainantController.cs" />
     <Compile Include="Controllers\ComplaintController.cs" />
     <Compile Include="Controllers\DistrictController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -274,6 +275,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Category\" />
+    <Folder Include="Views\Complainant\" />
     <Folder Include="Views\Complaint\" />
     <Folder Include="Views\District\" />
     <Folder Include="Views\SDC\" />

@@ -32,6 +32,9 @@ namespace CMS.Api.Models
                 Email = appUser.Email,
                 EmailConfirmed = appUser.EmailConfirmed,
                 CreationDate = appUser.CreationDate,
+                DistrictId = appUser.DistrictId,
+                SDCId = appUser.SDCId,
+                Mobile = appUser.Mobile,
                 Roles = _AppUserManager.GetRolesAsync(appUser.Id).Result
                 };
             }
@@ -54,6 +57,9 @@ namespace CMS.Api.Models
         public string UserName { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public int SDCId { get; set; }
+        public int DistrictId { get; set; }
+        public string Mobile { get; set; }
         public bool EmailConfirmed { get; set; }
         public DateTime CreationDate { get; set; }
         public IList<string> Roles { get; set; }

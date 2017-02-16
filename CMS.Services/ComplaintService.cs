@@ -19,14 +19,14 @@ namespace CMS.Services
         /// Gets list of all complaints
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Complaint> GetAll();
+        IEnumerable<ComplaintView> GetAll();
 
         /// <summary>
         /// Gets a Complaint by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Complaint GetById(int id);
+        ComplaintView GetById(int id);
 
         /// <summary>
         /// Adds a new complaint along with uploaded documents
@@ -34,7 +34,7 @@ namespace CMS.Services
         /// <param name="newCompliant"></param>
         /// <param name="documents"></param>
         /// <returns></returns>
-        ActionResponse Add(Complaint newCompliant, List<string> documents);
+        ActionResponse Add(NewComplaint newCompliant, List<string> documents);
 
         /// <summary>
         /// Updates the provided Complaint
@@ -42,7 +42,7 @@ namespace CMS.Services
         /// <param name="ComplaintId"></param>
         /// <param name="updatedComplaint"></param>
         /// <returns></returns>
-        ActionResponse Update(int complaintId, Complaint updatedComplaint);
+        ActionResponse Update(int complaintId, NewComplaint updatedComplaint);
 
         /// <summary>
         /// Deletes the provided Complaint
@@ -57,48 +57,62 @@ namespace CMS.Services
         private readonly UnitOfWork unitWork;
         IMessageHelper msgHelper;
         ActionResponse response;
-        MapperConfiguration config;
 
         public ComplaintService()
             {
             unitWork = new UnitOfWork();
             msgHelper = new MessageHelper();
             response = new ActionResponse();
-            config = new MapperConfiguration(cfg =>
+            /*config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<EFComplaint, Complaint>();
-            });
+                cfg.CreateMap<EFComplaint, ComplaintView>();
+            });*/
             }
 
-        public IEnumerable<Complaint> GetAll()
+        public IEnumerable<ComplaintView> GetAll()
             {
             using (var unitWork = new UnitOfWork())
                 {
-                var mapper = config.CreateMapper();
-                List<Complaint> complaintsList = new List<Complaint>();
-                var complaints = unitWork.ComplaintRepository.GetAll().ToList();
-                if (complaints.Any())
+                List<ComplaintView> complaintsList = new List<ComplaintView>();
+                var complaints = unitWork.ComplaintRepository.GetWithInclude(c => c.Id != 0, new string[] { "Complainant", "District", "SDC", "Category", "District" });
+                foreach(var complaint in complaints)
                     {
-                    complaintsList = mapper.Map<List<EFComplaint>, List<Complaint>>(complaints);
-                    return complaintsList;
+                    List<string> documents = new List<string>();
+                    foreach(var document in complaint.Documents)
+                        {
+                        documents.Add(document.Path);
+                        }
+
+                    complaintsList.Add(new ComplaintView()
+                        {
+                            Id = complaint.Id,
+                            Description = complaint.Description,
+                            ComplainantId = complaint.Complainant.Id,
+                            Complainant = complaint.Complainant.FullName,
+                            SDCId = complaint.SDC.Id,
+                            SDC = complaint.SDC.Title,
+                            CategoryId = complaint.Category.Id,
+                            Category = complaint.Category.Name,
+                            District = complaint.District.Name,
+                            DistrictId = complaint.District.Id,
+                            Documents = documents
+                        });
                     }
-                return null;
+                return complaintsList;
                 }
             }
 
-        public Complaint GetById(int id)
+        public ComplaintView GetById(int id)
             {
             var complaint = unitWork.ComplaintRepository.GetByID(id);
-            var mapper = config.CreateMapper();
             if (complaint != null)
                 {
-                var mappedComplaint = mapper.Map<EFComplaint, Complaint>(complaint);
-                return mappedComplaint;
+
                 }
             return null;
             }
 
-        public ActionResponse Add(Complaint newComplaint, List<string> documents)
+        public ActionResponse Add(NewComplaint newComplaint, List<string> documents)
             {
             try
                 {
@@ -167,7 +181,7 @@ namespace CMS.Services
             return response;
             }
 
-        public ActionResponse Update(int id, Complaint updatedComplaint)
+        public ActionResponse Update(int id, NewComplaint updatedComplaint)
             {
             try
                 {

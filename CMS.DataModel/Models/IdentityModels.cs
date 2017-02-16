@@ -23,6 +23,9 @@ namespace CMS.DataModel
         [MaxLength(100)]
         public string LastName { get; set; }
 
+        [Required]
+        public int DistrictId { get; set; }
+        [Required]
         public int SDCId { get; set; }
 
         public string Mobile { get; set; }
