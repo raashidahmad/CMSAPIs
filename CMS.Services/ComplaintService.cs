@@ -34,7 +34,7 @@ namespace CMS.Services
         /// <param name="newCompliant"></param>
         /// <param name="documents"></param>
         /// <returns></returns>
-        ActionResponse Add(NewComplaint newCompliant, List<string> documents);
+        ActionResponse Add(NewComplaint newCompliant);
 
         /// <summary>
         /// Updates the provided Complaint
@@ -112,7 +112,7 @@ namespace CMS.Services
             return null;
             }
 
-        public ActionResponse Add(NewComplaint newComplaint, List<string> documents)
+        public ActionResponse Add(NewComplaint newComplaint)
             {
             try
                 {
@@ -120,6 +120,14 @@ namespace CMS.Services
                 if (category == null)
                     {
                     response.Message = msgHelper.GetNotFoundMessage("Category");
+                    response.Success = false;
+                    return response;
+                    }
+
+                var district = unitWork.DistrictRepository.GetByID(newComplaint.DistrictId);
+                if (district == null)
+                    {
+                    response.Message = msgHelper.GetNotFoundMessage("District");
                     response.Success = false;
                     return response;
                     }
@@ -146,6 +154,7 @@ namespace CMS.Services
                     {
                         Category = category,
                         Complainant = complainant,
+                        District = district,
                         SDC = sdc,
                         Description = newComplaint.Description,
                         Dated = DateTime.Now,
@@ -154,7 +163,7 @@ namespace CMS.Services
 
                     unitWork.ComplaintRepository.Insert(complaint);
                     //Store references to all the uploaded documents against a complaint
-                    if (documents.Count > 0)
+                    /*if (documents.Count > 0)
                         {
                         List<EFDocuments> docs = new List<EFDocuments>();
                         foreach(var docPath in documents)
@@ -165,7 +174,7 @@ namespace CMS.Services
                                 Path = docPath 
                             });
                             }
-                        }
+                        }*/
 
                     unitWork.Save();
                     scope.Complete();

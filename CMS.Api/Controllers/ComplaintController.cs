@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace CMS.Api.Controllers
 {
@@ -45,7 +44,7 @@ namespace CMS.Api.Controllers
             return Content(HttpStatusCode.NotFound, APIMessageHelper.EntityNotFoundMessage("Complaint", id));
             }
 
-        // POST api/Complaint
+        [Route("api/Complaint")]
         public IHttpActionResult Post([FromBody] NewComplaint complaint)
             {
             List<string> documents = new List<string>();
@@ -55,7 +54,7 @@ namespace CMS.Api.Controllers
                 return BadRequest(ModelState);
                 }
 
-            var response = complaintService.Add(complaint, documents);
+            var response = complaintService.Add(complaint);
             if (response.Success)
                 {
                 return Ok(response.ReturnedId);
@@ -63,7 +62,7 @@ namespace CMS.Api.Controllers
             return Content(HttpStatusCode.BadRequest, response.Message);
             }
 
-        public IHttpActionResult PostDocument()
+        public IHttpActionResult UploadDocument()
             {
             var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count > 0)

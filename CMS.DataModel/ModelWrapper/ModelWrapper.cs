@@ -100,6 +100,7 @@ namespace CMS.DataModel.ModelWrapper
             }
         public int ComplainantId { get; set; }
         public int CategoryId { get; set; }
+        public int DistrictId { get; set; }
         public int SDCId { get; set; }
         public string Description { get; set; }
         public List<string> Documents { get; set; }

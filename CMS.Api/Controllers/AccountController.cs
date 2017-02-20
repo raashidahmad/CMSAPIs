@@ -102,14 +102,27 @@ namespace CMS.Api.Controllers
             {
             //Only SuperAdmin or Admin can delete users (Later when implement roles)
             var user = await this.AppUserManager.FindByNameAsync(username);
-
+            
             if (user != null)
                 {
-                return Ok(this.TheModelFactory.Create(user));
+                //return Ok(this.TheModelFactory.Create(user));
+                var userRoles = user.Roles;
+                List<string> roles = new List<string>();
+                foreach(var role in userRoles)
+                    {
+                    roles.Add(role.RoleId);
+                    }
+                UserView theUser = new UserView() 
+                {
+                    DistrictId = user.DistrictId,
+                    SDCId = user.SDCId,
+                    FullName = user.FirstName + " " + user.LastName,
+                    Roles = roles
+                };
+                return Ok(theUser);
                 }
 
             return NotFound();
-
             }
 
         [AllowAnonymous]

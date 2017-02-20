@@ -46,7 +46,7 @@ namespace CMS.Api.Controllers
                     {
                         Id = complainant.Id,
                         NIC = complainant.NIC,
-                        FullName = complainant.FullName
+                        FullName = complainant.NIC + "-" + complainant.FullName
                     });
                 }
             if (complainantList.Count > 0)
