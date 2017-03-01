@@ -20,6 +20,11 @@ namespace CMS.Api.Controllers
             {
             }
 
+        public string OptionsXXX()
+            {
+            return null; // HTTP 200 response with empty body
+            }
+
         public IHttpActionResult Get()
             {
             complaintService = new ComplaintService();
@@ -44,7 +49,6 @@ namespace CMS.Api.Controllers
             return Content(HttpStatusCode.NotFound, APIMessageHelper.EntityNotFoundMessage("Complaint", id));
             }
 
-        [Route("api/Complaint")]
         public IHttpActionResult Post([FromBody] NewComplaint complaint)
             {
             List<string> documents = new List<string>();
@@ -57,12 +61,17 @@ namespace CMS.Api.Controllers
             var response = complaintService.Add(complaint);
             if (response.Success)
                 {
+                //Create a new directory for the complaint created just now
+                string directoryName = "Complaints-" + response.ReturnedId;
+                var mappedPath = HttpContext.Current.Server.MapPath("~/Uploads/");
+                System.IO.Directory.CreateDirectory(mappedPath + directoryName);
                 return Ok(response.ReturnedId);
                 }
             return Content(HttpStatusCode.BadRequest, response.Message);
             }
 
-        public IHttpActionResult UploadDocument()
+        [Route("api/Complaint/Upload")]
+        public IHttpActionResult UploadDocument(int id)
             {
             var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count > 0)
@@ -71,14 +80,13 @@ namespace CMS.Api.Controllers
                 foreach (string file in httpRequest.Files)
                     {
                     var postedFile = httpRequest.Files[file];
-                    var filePath = HttpContext.Current.Server.MapPath("~/" + postedFile.FileName);
+                    var filePath = HttpContext.Current.Server.MapPath("~/Uploads/" + postedFile.FileName);
                     postedFile.SaveAs(filePath);
 
                     docfiles.Add(filePath);
                     }
                 return Content(HttpStatusCode.Created, docfiles);
                 }
-
             return Content(HttpStatusCode.BadRequest, "");
             }
 

@@ -74,7 +74,7 @@ namespace CMS.Services
             using (var unitWork = new UnitOfWork())
                 {
                 List<ComplaintView> complaintsList = new List<ComplaintView>();
-                var complaints = unitWork.ComplaintRepository.GetWithInclude(c => c.Id != 0, new string[] { "Complainant", "District", "SDC", "Category", "District" });
+                var complaints = unitWork.ComplaintRepository.GetWithInclude(c => c.Id != 0, new string[] { "Complainant", "District", "SDC", "Category", "Documents" });
                 foreach(var complaint in complaints)
                     {
                     List<string> documents = new List<string>();

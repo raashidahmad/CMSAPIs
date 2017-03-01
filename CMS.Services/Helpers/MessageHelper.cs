@@ -55,6 +55,13 @@ namespace CMS.Services.Helpers
         /// <param name="column"></param>
         /// <returns></returns>
         string GetInvalidNumericMessaage(string column);
+
+        /// <summary>
+        /// Gets invalid message for an entity or column
+        /// </summary>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        string GetInvalidMessage(string column);
         }
 
     public class MessageHelper : IMessageHelper
@@ -66,6 +73,7 @@ namespace CMS.Services.Helpers
         private string cannotBeZero = "";
         private string cannotBeLessThanZero = "";
         private string invalidNumeric = "";
+        private string invalidMessage = "";
 
         public MessageHelper()
             {
@@ -75,6 +83,7 @@ namespace CMS.Services.Helpers
             this.cannotBeZero = " cannot be less than or equal to zero.";
             this.cannotBeLessThanZero = " cannot be less than zero.";
             this.invalidNumeric = " must be a valid numeric value";
+            this.invalidMessage = " provided is invalid";
             }
 
         public string GetNotFoundMessage(string entity)
@@ -110,6 +119,11 @@ namespace CMS.Services.Helpers
         public string GetInvalidNumericMessaage(string column)
             {
             return column + this.invalidNumeric;
+            }
+
+        public string GetInvalidMessage(string column)
+            {
+            return column + this.invalidMessage;
             }
         }
     }

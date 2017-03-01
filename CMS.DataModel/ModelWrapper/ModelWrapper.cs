@@ -145,4 +145,10 @@ namespace CMS.DataModel.ModelWrapper
         public int Id { get; set; }
         }
 
+    public class DocumentEntry
+        {
+        public int EntryId { get; set; }
+        public string Document { get; set; }
+        }
+
     }

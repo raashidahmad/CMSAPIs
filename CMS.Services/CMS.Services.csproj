@@ -57,6 +57,7 @@
     <Compile Include="ComplainantService.cs" />
     <Compile Include="ComplaintService.cs" />
     <Compile Include="DistrictService.cs" />
+    <Compile Include="DocumentService.cs" />
     <Compile Include="Helpers\MessageHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SDCService.cs" />
