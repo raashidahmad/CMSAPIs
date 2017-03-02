@@ -95,7 +95,8 @@ namespace CMS.Services
                             Category = complaint.Category.Name,
                             District = complaint.District.Name,
                             DistrictId = complaint.District.Id,
-                            Documents = documents
+                            Documents = documents,
+                            Dated = complaint.Dated
                         });
                     }
                 return complaintsList;

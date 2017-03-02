@@ -83,7 +83,9 @@ namespace CMS.Api.Helpers
         public JsonFiles GetFileList(int id)
         {
             var r = new List<ViewDataUploadFilesResult>();
-            String fullPath = Path.Combine(StorageRoot);
+            var dirPath = "Complaints-" + id + "/";
+            this.complaintId = id;
+            String fullPath = Path.Combine(StorageRoot, dirPath);
             if (Directory.Exists(fullPath))
             {
                 DirectoryInfo dir = new DirectoryInfo(fullPath);
@@ -136,24 +138,33 @@ namespace CMS.Api.Helpers
             {
                 var file = request.Files[i];
                 String pathOnServer = Path.Combine(StorageRoot + "/Complaints-" + complaintId + "/");
-                var fullPath = Path.Combine(pathOnServer, Path.GetFileName(file.FileName));
-                this.currentFileName = file.FileName;
+                if (!Directory.Exists(pathOnServer))
+                    {
+                    Directory.CreateDirectory(pathOnServer);
+                    }
+
+                //string[] imageArray = file.FileName.Split('.');
+
+                string fileName = Path.GetFileNameWithoutExtension(Path.GetFileName(file.FileName)) + "_" + DateTime.Now.Ticks.ToString();
+                string extansion = Path.GetExtension(file.FileName).ToLower();
+                fileName += extansion;
+                var fullPath = Path.Combine(pathOnServer, fileName);
+
+                this.currentFileName = fileName;
                 file.SaveAs(fullPath);
-    
-                //Create thumb
-                string[] imageArray = file.FileName.Split('.');
-                if (imageArray.Length != 0)
+                
+                if (!string.IsNullOrEmpty(extansion))
                 {
-                    String extansion = imageArray[imageArray.Length - 1].ToLower();
-                    if (extansion != "jpg" && extansion != "png" && extansion != "jpeg") //Do not create thumb if file is not an image
+                    if (extansion != ".jpg" && extansion != ".png" && extansion != ".jpeg") //Do not create thumb if file is not an image
                     {
                         
                     }
                     else
                     {
+                        //Create thumb
                         var ThumbfullPath = Path.Combine(pathOnServer, "thumbs");
                         //String fileThumb = file.FileName + ".80x80.jpg";
-                        String fileThumb = Path.GetFileNameWithoutExtension(file.FileName) + "80x80.jpg";
+                        String fileThumb = Path.GetFileNameWithoutExtension(fileName) + "80x80.jpg";
                         var ThumbfullPath2 = Path.Combine(ThumbfullPath, fileThumb);
                         using (MemoryStream stream = new MemoryStream(System.IO.File.ReadAllBytes(fullPath)))
                         {
@@ -163,7 +174,7 @@ namespace CMS.Api.Helpers
 
                     }
                 }
-                statuses.Add(UploadResult(file.FileName, file.ContentLength, file.FileName));
+                statuses.Add(UploadResult(fileName, file.ContentLength, fileName));
             }
         }
 
