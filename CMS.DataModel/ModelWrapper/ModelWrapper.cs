@@ -75,13 +75,42 @@ namespace CMS.DataModel.ModelWrapper
             }
 
         public int Id { get; set; }
-        public int ComplainantId { get; set; }
         public string Complainant { get; set; }
         public int CategoryId { get; set; }
         public string Category { get; set; }
-        public int DistrictId { get; set; }
         public string District { get; set; }
-        public int SDCId { get; set; }
+        public string SDC { get; set; }
+        public string Description { get; set; }
+        public DateTime Dated { get; set; }
+        public ComplaintStatus Status { get; set; }
+        public List<string> Documents { get; set; }
+        }
+
+    public class ComplaintFullView
+        {
+        public enum ComplaintStatus : int
+            {
+            InQueue = 1,
+            UnderProcess = 2,
+            Completed = 3,
+            Closed = 4
+            }
+
+        public enum CommunicationMedium : int
+            {
+            SMS = 1,
+            Phone = 2
+            }
+
+        public int Id { get; set; }
+        public int ComplainantId { get; set; }
+        public string Complainant { get; set; }
+        public string ComplainantNIC { get; set; }
+        public string ComplainantMobile { get; set; }
+        public string ComplainantAddress { get; set; }
+        public CommunicationMedium ContactMedium { get; set; }
+        public string Category { get; set; }
+        public string District { get; set; }
         public string SDC { get; set; }
         public string Description { get; set; }
         public DateTime Dated { get; set; }

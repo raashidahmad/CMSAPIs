@@ -107,7 +107,8 @@ namespace CMS.Services
                         NIC = newComplainant.NIC,
                         Mobile = newComplainant.Mobile,
                         ContactMedium = (EFComplainant.CommunicationMedium)newComplainant.ContactMedium,
-                        Address = newComplainant.Address
+                        Address = newComplainant.Address,
+                        
                     };
                     unitWork.ComplainantRepository.Insert(Complainant);
                     unitWork.Save();

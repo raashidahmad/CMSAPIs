@@ -26,7 +26,7 @@ namespace CMS.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ComplaintView GetById(int id);
+        ComplaintFullView GetById(int id);
 
         /// <summary>
         /// Adds a new complaint along with uploaded documents
@@ -86,15 +86,10 @@ namespace CMS.Services
                     complaintsList.Add(new ComplaintView()
                         {
                             Id = complaint.Id,
-                            Description = complaint.Description,
-                            ComplainantId = complaint.Complainant.Id,
                             Complainant = complaint.Complainant.FullName,
-                            SDCId = complaint.SDC.Id,
                             SDC = complaint.SDC.Title,
-                            CategoryId = complaint.Category.Id,
                             Category = complaint.Category.Name,
                             District = complaint.District.Name,
-                            DistrictId = complaint.District.Id,
                             Documents = documents,
                             Dated = complaint.Dated
                         });
@@ -103,14 +98,36 @@ namespace CMS.Services
                 }
             }
 
-        public ComplaintView GetById(int id)
+        public ComplaintFullView GetById(int id)
             {
-            var complaint = unitWork.ComplaintRepository.GetByID(id);
+            ComplaintFullView complaintDetails = new ComplaintFullView();
+            var complaint = unitWork.ComplaintRepository.GetWithInclude(c => c.Id == id, new string[] { "Complainant", "District", "SDC", "Category", "Documents" }).FirstOrDefault();
             if (complaint != null)
                 {
+                List<string> documents = new List<string>();
+                foreach (var document in complaint.Documents)
+                    {
+                    documents.Add(document.Path);
+                    }
 
+                complaintDetails = new ComplaintFullView()
+                    {
+                    Id = complaint.Id,
+                    ComplainantId = complaint.Complainant.Id,
+                    Complainant = complaint.Complainant.FullName,
+                    ComplainantNIC = complaint.Complainant.NIC,
+                    ComplainantMobile = complaint.Complainant.Mobile,
+                    ComplainantAddress = complaint.Complainant.Address,
+                    ContactMedium = (ComplaintFullView.CommunicationMedium)complaint.Complainant.ContactMedium,
+                    SDC = complaint.SDC.Title,
+                    Category = complaint.Category.Name,
+                    District = complaint.District.Name,
+                    Status = (ComplaintFullView.ComplaintStatus)complaint.Status,
+                    Documents = documents,
+                    Dated = complaint.Dated
+                    };
                 }
-            return null;
+            return complaintDetails;
             }
 
         public ActionResponse Add(NewComplaint newComplaint)
