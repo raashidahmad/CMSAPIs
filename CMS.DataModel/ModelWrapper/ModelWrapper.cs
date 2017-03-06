@@ -76,6 +76,8 @@ namespace CMS.DataModel.ModelWrapper
 
         public int Id { get; set; }
         public string Complainant { get; set; }
+        public string NIC { get; set; }
+        public string Mobile { get; set; }
         public int CategoryId { get; set; }
         public string Category { get; set; }
         public string District { get; set; }
@@ -115,7 +117,7 @@ namespace CMS.DataModel.ModelWrapper
         public string Description { get; set; }
         public DateTime Dated { get; set; }
         public ComplaintStatus Status { get; set; }
-        public List<string> Documents { get; set; }
+        public List<ViewDataUploadFilesResult> Documents { get; set; }
         }
 
     public class NewComplaint
@@ -178,6 +180,18 @@ namespace CMS.DataModel.ModelWrapper
         {
         public int EntryId { get; set; }
         public string Document { get; set; }
+        }
+
+    //Properties with small letters just because of its dependency on the filehelper class
+    public class ViewDataUploadFilesResult
+        {
+        public string name { get; set; }
+        public int size { get; set; }
+        public string type { get; set; }
+        public string url { get; set; }
+        public string deleteUrl { get; set; }
+        public string thumbnailUrl { get; set; }
+        public string deleteType { get; set; }
         }
 
     }

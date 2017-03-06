@@ -87,6 +87,8 @@ namespace CMS.Services
                         {
                             Id = complaint.Id,
                             Complainant = complaint.Complainant.FullName,
+                            Mobile = complaint.Complainant.Mobile,
+                            NIC = complaint.Complainant.NIC,
                             SDC = complaint.SDC.Title,
                             Category = complaint.Category.Name,
                             District = complaint.District.Name,
@@ -104,12 +106,6 @@ namespace CMS.Services
             var complaint = unitWork.ComplaintRepository.GetWithInclude(c => c.Id == id, new string[] { "Complainant", "District", "SDC", "Category", "Documents" }).FirstOrDefault();
             if (complaint != null)
                 {
-                List<string> documents = new List<string>();
-                foreach (var document in complaint.Documents)
-                    {
-                    documents.Add(document.Path);
-                    }
-
                 complaintDetails = new ComplaintFullView()
                     {
                     Id = complaint.Id,
@@ -123,7 +119,7 @@ namespace CMS.Services
                     Category = complaint.Category.Name,
                     District = complaint.District.Name,
                     Status = (ComplaintFullView.ComplaintStatus)complaint.Status,
-                    Documents = documents,
+                    Documents = null,
                     Dated = complaint.Dated
                     };
                 }
